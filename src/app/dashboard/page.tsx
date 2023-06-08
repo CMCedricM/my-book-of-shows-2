@@ -13,7 +13,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="flex h-full w-full flex-row gap-3 ">
+      <div className="flex h-full w-full flex-row gap-4 ">
         <div id="Sidebar" className="flex w-[15vw] flex-col gap-3">
           <div className="flex h-max w-full rounded-lg">
             <SearchAndFilter
