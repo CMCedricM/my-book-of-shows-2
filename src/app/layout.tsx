@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import MyHeader from "./components/header";
+import { AuthController } from "./contexts/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,10 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex h-screen w-full p-4 flex-col gap-3 bg-gradient-to-b from-deep-purple/95 to-deeper-green/90 px-7 text-white">
-        <MyHeader></MyHeader>
-        {children}
-      </body>
+      <AuthController>
+        <body className="flex h-screen w-full p-4 flex-col gap-3 bg-gradient-to-b from-deep-purple/95 to-deeper-green/90 px-7 text-white">
+          <MyHeader></MyHeader>
+          {children}
+        </body>
+      </AuthController>
     </html>
   );
 }
