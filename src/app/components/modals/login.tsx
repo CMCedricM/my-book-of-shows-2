@@ -37,6 +37,8 @@ const LoginModal = ({
 
     // Save user name to local store
     localStorage.setItem("user_info", vals.email);
+    // Close Modal
+    setOpen(false);
     // For now just allow through
     login();
   };
