@@ -1,23 +1,51 @@
 "use client";
 import { ReactNode, createContext, useEffect, useState } from "react";
 import LoginModal from "../components/modals/login";
-import { useRouter } from "next/router";
+import { useRouter, usePathname } from "next/navigation";
 type AuthContextProps = {
   isAuthenticated: boolean;
+  userName: string;
+  login: () => void;
 };
 
-export const AuthContext = createContext<AuthContextProps | undefined>(
-  undefined
-);
+export const AuthContext = createContext<AuthContextProps>({
+  isAuthenticated: false,
+  userName: "",
+  login: () => {},
+});
 
 type AuthControllerProps = {
   children: ReactNode;
 };
 export const AuthController = ({ children }: AuthControllerProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userName, setUserName] = useState<string>("");
+  const pathname = usePathname();
+
+  const [showLogin, setShowLogin] = useState<boolean>(false);
+  useEffect(() => {
+    if (!isAuthenticated && pathname != "/") {
+      setShowLogin(true);
+    } else if (isAuthenticated) {
+      const user = localStorage.getItem("user_info");
+      if (user) {
+        setUserName(user);
+      }
+      setShowLogin(false);
+    }
+  }, [pathname, isAuthenticated]);
+
+  const login = () => {
+    setIsAuthenticated(true);
+    
+  };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, userName }}>
+      <LoginModal
+        openState={[showLogin, setShowLogin]}
+        title="Login to Continue"
+      ></LoginModal>
       {children}
     </AuthContext.Provider>
   );

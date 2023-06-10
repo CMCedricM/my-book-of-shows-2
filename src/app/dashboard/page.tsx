@@ -1,11 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { FilterTypes } from "../global-types/types";
 import UserLists from "../components/userLists";
 import SearchAndFilter from "../components/searchAndFilter";
 import CurrentListView from "../components/currentListView";
+import AuthContext from "../contexts/auth";
 
 const Dashboard = () => {
+  
+
   const [filter, setFilter] = useState<FilterTypes>(FilterTypes.None);
   const [itemToFind, setItemToFind] = useState<string>("");
 

@@ -1,9 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import AuthContext from "../contexts/auth";
+
 const MyHeader = () => {
   const { push } = useRouter();
-  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
+  const { isAuthenticated, userName } = useContext(AuthContext);
+
   return (
     <div className="mt-2 flex w-full flex-row items-center justify-center gap-4 rounded-md bg-blur-green py-4 drop-shadow-lg backdrop-blur-sm">
       <h1
@@ -12,7 +15,7 @@ const MyHeader = () => {
       >
         My Book Of Shows
       </h1>
-      {userLoggedIn && <div className="pr-4 text-right">User</div>}
+      {isAuthenticated && <div className="pr-4 text-right">{userName}</div>}
     </div>
   );
 };
