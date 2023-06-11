@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 import { useState, useContext } from "react";
 import AuthContext from "../contexts/auth";
 import LoginModal from "./modals/login";
-import Menu from "./popover/showsPopOvers";
 import ShowsPopOvers from "./popover/popover";
 
 const MyHeader = () => {
