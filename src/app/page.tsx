@@ -1,4 +1,6 @@
-import Image from "next/image";
+"use client";
+import LoginModal from "./components/modals/login";
+import { useState } from "react";
 
 export default function Home() {
   return (
