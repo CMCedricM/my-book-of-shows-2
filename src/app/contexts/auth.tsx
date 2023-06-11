@@ -3,7 +3,7 @@ import { ReactNode, createContext, useEffect, useState } from "react";
 import LoginModal from "../components/modals/login";
 import { useRouter, usePathname } from "next/navigation";
 import { auth } from "@/firebase/firebase";
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import Router from "next/router";
 
 export const userInfo = "user_info";
@@ -32,6 +32,20 @@ export const AuthController = ({ children }: AuthControllerProps) => {
   const { push } = useRouter();
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [stateReset, setStateReset] = useState<boolean>(false);
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setShowLogin(false);
+        setIsAuthenticated(true);
+        localStorage.setItem(userInfo, user.displayName ?? "user");
+      } else {
+        const currUser = localStorage.getItem(userInfo);
+        if (currUser) {
+          localStorage.removeItem(userInfo);
+        }
+      }
+    });
+  }, []);
   useEffect(() => {
     if (!isAuthenticated && pathname != "/") {
       setShowLogin(true);

@@ -18,7 +18,10 @@ const MyHeader = () => {
         My Book Of Shows
       </h1>
       {isAuthenticated && (
-        <div className="pr-4 text-right" onClick={() => logout()}>
+        <div
+          className="pr-4 text-right cursor-pointer"
+          onClick={() => logout()}
+        >
           {userName}
         </div>
       )}

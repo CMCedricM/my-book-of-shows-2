@@ -9,7 +9,11 @@ import {
 import AuthContext from "@/app/contexts/auth";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { loginFieldsTypes } from "@/app/global-types/types";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
 import { auth } from "@/firebase/firebase";
 
 type LoginProps = {
@@ -45,10 +49,14 @@ const LoginModal = ({
   const onSubmit: SubmitHandler<loginFieldsTypes> = async (data) => {
     // Login Logic
     let success = false;
-    await signInWithEmailAndPassword(auth, data.email, data.password)
-      .then(() => {
-        success = true;
-        setLoginError("");
+    await setPersistence(auth, browserLocalPersistence)
+      .then(async () => {
+        await signInWithEmailAndPassword(auth, data.email, data.password).then(
+          () => {
+            success = true;
+            setLoginError("");
+          }
+        );
       })
       .catch((err) => {
         console.log(`There was an errorr ${err}`);
