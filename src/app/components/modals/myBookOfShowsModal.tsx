@@ -7,7 +7,7 @@ import {
 } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 // import XMark from "heroicons/24/solid/x-mark.svg";
-import XMarkIcon from "heroicons/24/outline/x-mark.svg";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 
 type BookOfShowsModalProps = {
@@ -57,12 +57,7 @@ const BookOfShowsModal = ({
                   {!preventClosing ? (
                     <div className="pb-2">
                       <button onClick={() => setOpen(false)}>
-                        <Image
-                          src={XMarkIcon}
-                          height={25}
-                          width={25}
-                          alt=""
-                        ></Image>
+                        <XMarkIcon height={25} width={25} />
                       </button>
                     </div>
                   ) : (
