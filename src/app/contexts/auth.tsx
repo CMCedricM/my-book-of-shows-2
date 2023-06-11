@@ -67,7 +67,7 @@ export const AuthController = ({ children }: AuthControllerProps) => {
   // This just ensures that once the username is empty reset the state
   useEffect(() => {
     if (!userName) {
-      const timer = setTimeout(() => setIsAuthenticated(false), 1000);
+      const timer = setTimeout(() => setIsAuthenticated(false), 500);
       return () => clearTimeout(timer);
     }
   }, [userName]);

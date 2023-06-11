@@ -7,8 +7,6 @@ import CurrentListView from "../components/currentListView";
 import AuthContext from "../contexts/auth";
 
 const Dashboard = () => {
-  
-
   const [filter, setFilter] = useState<FilterTypes>(FilterTypes.None);
   const [itemToFind, setItemToFind] = useState<string>("");
 
