@@ -8,6 +8,9 @@ import {
 } from "react";
 import AuthContext from "@/app/contexts/auth";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { loginFieldsTypes } from "@/app/global-types/types";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase/firebase";
 
 type LoginProps = {
   openState: [boolean, Dispatch<SetStateAction<boolean>>];
@@ -25,18 +28,39 @@ const LoginModal = ({
   const { isAuthenticated, login } = useContext(AuthContext);
   const [open, setOpen] = openState;
   const [reloadPage, setReload] = reload ?? [null, null];
+  const [loginError, setLoginError] = useState<string>("");
 
-  type loginFieldsTypes = {
-    email: string;
-    password: string;
-  };
-  const { register, watch, handleSubmit, reset } = useForm<loginFieldsTypes>();
+  const {
+    register,
+    watch,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<loginFieldsTypes>();
 
-  const onSubmit: SubmitHandler<loginFieldsTypes> = (vals) => {
+  useEffect(() => {
+    reset();
+  }, [isAuthenticated, reset]);
+
+  const onSubmit: SubmitHandler<loginFieldsTypes> = async (data) => {
     // Login Logic
+    let success = false;
+    await signInWithEmailAndPassword(auth, data.email, data.password)
+      .then(() => {
+        success = true;
+        setLoginError("");
+      })
+      .catch((err) => {
+        console.log(`There was an errorr ${err}`);
+        setLoginError(`${err}`);
+      });
 
+    if (!success) {
+      reset({ password: "" });
+      return;
+    }
     // Save user name to local store
-    localStorage.setItem("user_info", vals.email);
+    localStorage.setItem("user_info", data.email);
     // Close Modal
     setOpen(false);
     // For now just allow through
@@ -62,8 +86,14 @@ const LoginModal = ({
               id="username"
               type="text"
               className="rounded-lg p-2 text-black"
-              {...register("email")}
+              {...register("email", {
+                required: true,
+                pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+              })}
             ></input>
+            {errors.email && (
+              <div className="text-red pl-1">{`Invalid Email`}</div>
+            )}
           </div>
           <div className="flex flex-col h-full w-full gap-2">
             <label htmlFor="password" className="font-semibold">
@@ -73,10 +103,16 @@ const LoginModal = ({
               id="password"
               type="password"
               className="rounded-lg p-2 text-black"
-              {...register("password")}
+              {...register("password", {
+                required: true,
+              })}
             ></input>
+            {errors.password && (
+              <div className="text-red pl-1">{`Invalid Password`}</div>
+            )}
           </div>
-          <div className="h-full w-full mt-3 flex items-center justify-center">
+          <div className="h-full w-full mt-3 gap-2 flex flex-col items-center justify-center">
+            {loginError && <div>{loginError}</div>}
             <button
               type="submit"
               className="bg-white text-black rounded-md px-7 py-2 font-semibold"

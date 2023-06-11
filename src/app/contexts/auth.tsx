@@ -2,6 +2,9 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
 import LoginModal from "../components/modals/login";
 import { useRouter, usePathname } from "next/navigation";
+import { auth } from "@/firebase/firebase";
+import { signOut } from "firebase/auth";
+import Router from "next/router";
 
 export const userInfo = "user_info";
 
@@ -9,12 +12,14 @@ type AuthContextProps = {
   isAuthenticated: boolean;
   userName: string;
   login: () => void;
+  logout: () => void;
 };
 
 export const AuthContext = createContext<AuthContextProps>({
   isAuthenticated: false,
   userName: "",
   login: () => {},
+  logout: () => {},
 });
 
 type AuthControllerProps = {
@@ -26,6 +31,7 @@ export const AuthController = ({ children }: AuthControllerProps) => {
   const pathname = usePathname();
   const { push } = useRouter();
   const [showLogin, setShowLogin] = useState<boolean>(false);
+  const [stateReset, setStateReset] = useState<boolean>(false);
   useEffect(() => {
     if (!isAuthenticated && pathname != "/") {
       setShowLogin(true);
@@ -38,14 +44,35 @@ export const AuthController = ({ children }: AuthControllerProps) => {
         push("/dashboard");
       }
     }
-  }, [pathname, isAuthenticated]);
+  }, [pathname, isAuthenticated, push]);
 
   const login = () => {
     setIsAuthenticated(true);
   };
 
+  // This just ensures that once the username is empty reset the state
+  useEffect(() => {
+    if (!userName) {
+      const timer = setTimeout(() => setIsAuthenticated(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [userName]);
+
+  const logout = async () => {
+    await signOut(auth)
+      .then(async () => {
+        console.log("exited");
+        localStorage.removeItem(userInfo);
+        setUserName("");
+        push("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, userName }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, userName, logout }}>
       <LoginModal
         openState={[showLogin, setShowLogin]}
         title="Login to Continue"

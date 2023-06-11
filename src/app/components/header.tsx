@@ -6,7 +6,7 @@ import LoginModal from "./modals/login";
 
 const MyHeader = () => {
   const { push } = useRouter();
-  const { isAuthenticated, userName } = useContext(AuthContext);
+  const { isAuthenticated, userName, logout } = useContext(AuthContext);
   const [showLogin, setShowLogin] = useState<boolean>(false);
   return (
     <div className="mt-2 flex w-full flex-row items-center justify-center gap-4 rounded-md bg-blur-green py-4 drop-shadow-lg backdrop-blur-sm">
@@ -17,7 +17,11 @@ const MyHeader = () => {
       >
         My Book Of Shows
       </h1>
-      {isAuthenticated && <div className="pr-4 text-right">{userName}</div>}
+      {isAuthenticated && (
+        <div className="pr-4 text-right" onClick={() => logout()}>
+          {userName}
+        </div>
+      )}
       {!isAuthenticated && (
         <div
           className="pr-4 text-right cursor-pointer"

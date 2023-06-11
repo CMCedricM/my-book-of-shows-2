@@ -4,3 +4,8 @@ export enum FilterTypes {
   Status,
   None,
 }
+
+export type loginFieldsTypes = {
+  email: string;
+  password: string;
+};
