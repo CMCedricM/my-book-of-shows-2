@@ -9,3 +9,7 @@ export type loginFieldsTypes = {
   email: string;
   password: string;
 };
+
+export type searchInput = {
+  anItem: string;
+};
